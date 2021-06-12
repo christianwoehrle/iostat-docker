@@ -19,7 +19,7 @@ type DeltaIO struct {
 
 func (a DeltaIO) Stringer() string {
 	//fmt.Println(a.containerName + " ==> " + strconv.Itoa(int(a.deltaIO)))
-	return a.containerName + " ==> " + strconv.Itoa(int(a.deltaIO))
+	return a.containerName + ";" + strconv.Itoa(int(a.deltaIO))
 }
 
 type DeltaIOs []DeltaIO
@@ -30,8 +30,8 @@ func (a DeltaIOs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 func (a DeltaIOs) Stringer() string {
 	s := ""
-	for _, j := range a {
-		s = s + j.Stringer() + "\n"
+	for i := len(a) - 1; i > len(a)-10 && i >= 0; i-- {
+		s = s + a[i].Stringer() + "\n"
 	}
 
 	return s
@@ -86,8 +86,6 @@ func main() {
 
 		}
 
-		fmt.Println(time.Now().Format(time.RFC1123))
-
 		ios := make(DeltaIOs, 0)
 		for i, oldIoContainer := range oldContainers {
 			//fmt.Println(i, oldIoContainer)
@@ -108,7 +106,10 @@ func main() {
 			}
 		}
 		sort.Sort(DeltaIOs(ios))
-		fmt.Println("ios ==> " + ios.Stringer())
+
+		fmt.Println(time.Now().Format(time.RFC1123))
+		fmt.Println(ios.Stringer())
+
 		time.Sleep(time.Duration(*duration) * time.Second)
 	}
 
